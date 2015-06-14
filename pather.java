@@ -114,27 +114,32 @@ public class pather {
         System.out.println("colHashMarker size: " + colHashMarker.size());
 
         for(int row = 0; row < rows; row++) {
-            for(int col = 0; col < inputLines.get(row).length(); col++) {
+            cols = inputLines.get(row).length();
+            for(int col = 0; col < cols; col++) {
                 int colindex = -1;
+                if(inputLines.get(row).charAt(col) == '.' && rowHashMarker.size() == 0 && colHashMarker.size() == 0) {
+                    System.out.println("Seen '.' and Hash Markers == 0");
+                    outputLines.add(".");
+                }
+                if(inputLines.get(row).charAt(col) == '.' && rowHashMarker.size() > 0 && colHashMarker.size() > 0) {
+                    System.out.println("Seen '.' and Hash Markers > 0");
+                }
+
                 if(inputLines.get(row).charAt(col) == '#') {
                     colindex = col;
-                    System.out.println("Seen '#' and Row Index: " + row + " Col Index: " + colindex);
-                    //todo: check if # marker exists already, if it does then connect them
+                    System.out.println("Seen '#' and Row Index: " + row + " Col Index: " + col);
+
+                    //todo: check if there is a prev # marker, if it does then connect them
                     if(rowHashMarker.size() > 0 && colHashMarker.size() > 0) {
                         System.out.println("Entering into connect portion");
                         //todo: # exists, need to connect them
-                        int row1 = rowHashMarker.get(0);
-                        int col1 = colHashMarker.get(0);
-                        int row2 = row;
-                        int col2 = col;
+                        int rowStart = rowHashMarker.get(0);
+                        int colStart = colHashMarker.get(0)+1; //todo: get rid of +1
+                        int rowEnd = row;
+                        int colEnd = col;
                         //check row and coldifferences
-                        int rowDiff = row2 - row1;
-                        int colDiff = col2 - col1;
-
-                        int rowStart = row1;
-                        int rowEnd = row2;
-                        int colStart = col1+1;
-                        int colEnd = col2;
+                        int rowDiff = rowEnd - rowStart;
+                        int colDiff = colEnd - colStart;
                         while(rowStart <= rowEnd) {
                             if(rowStart == rowEnd) {
                                 System.out.println("rowStart == rowEnd");
@@ -166,25 +171,25 @@ public class pather {
                         System.out.println("Past the outputLines portion for connecting");
 
                         //todo: check which row move form to use based on where the cols are
-                        //from row1+1 < row2 if on same col
-                        //from row1+1 <= row2 if on diff col
+                        //from rowStart+1 < rowEnd if on same col
+                        //from rowStart+1 <= rowEnd if on diff col
                         if(colDiff == 0) {
-                            while(row1+1 < row2) {
+                            while(rowStart+1 < rowEnd) {
 
-                                row1++;
+                                rowStart++;
                             }
                         }
                         else {
-                            while(row1+1 <= row2) {
+                            while(rowStart+1 <= rowEnd) {
 
-                                row1++;
+                                rowStart++;
                             }
                         }
                         //todo: check which col move form to use based on where the rows are
                         //from colfirst+1 < colsecond if on same row
                         //from colfirst+1 <= colsecond if on diff row
-                        int colfirst = (col1 < col2) ? col1 : col2;
-                        int colsecond = (col1 > col2) ? col1 : col2;
+                        int colfirst = (colStart < colEnd) ? colStart : colEnd;
+                        int colsecond = (colStart > colEnd) ? colStart : colEnd;
                         if(rowDiff == 0) {
                             while(colfirst+1 < colsecond) {
 
@@ -209,17 +214,6 @@ public class pather {
                     colHashMarker.add(colindex);
 
                 }
-                if(inputLines.get(row).charAt(col) == '.' && rowHashMarker.size() > 0 && colHashMarker.size() > 0) {
-                    System.out.println("Seen '.' and Hash Markers > 0");
-                }
-                if(inputLines.get(row).charAt(col) == '.' && rowHashMarker.size() == 0 && colHashMarker.size() == 0) {
-                    System.out.println("Seen '.' and Hash Markers == 0");
-                    outputLines.add(".");
-                }
-                /*if(inputLines.get(row).charAt(col) == '\n') {
-                    System.out.println("NEWLINE");
-                    outputLines.add("\n");
-                }*/
             }
         }
         //no other matches
