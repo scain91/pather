@@ -120,6 +120,9 @@ public class pather {
                 if(inputLines.get(row).charAt(col) == '.' && rowHashMarker.size() == 0 && colHashMarker.size() == 0) {
                     System.out.println("Seen '.' and Hash Markers == 0");
                     outputLines.add(".");
+                    if(col+1 == cols) {
+                        outputLines.add("\n");
+                    }
                 }
                 if(inputLines.get(row).charAt(col) == '.' && rowHashMarker.size() > 0 && colHashMarker.size() > 0) {
                     System.out.println("Seen '.' and Hash Markers > 0");
@@ -143,24 +146,37 @@ public class pather {
                         while(rowStart <= rowEnd) {
                             if(rowStart == rowEnd) {
                                 System.out.println("rowStart == rowEnd");
+                                System.out.println("colStart = " + colStart + " colEnd = " + colEnd);
                                 while(colStart < colEnd) {
-                                    System.out.println("colStart = " + colStart + " colEnd = " + colEnd);
-                                    outputLines.add("*");
+                                    System.out.println("colStart = " + colStart + " < colEnd = " + colEnd);
+                                    if(true) { //todo: check list of path points to see if this point is in path
+                                        outputLines.add("*");
+                                    }
+                                    else {
+                                        outputLines.add(".");
+                                    }
                                     colStart++;
                                 }
-                                rowStart++;
+                                //rowStart++;
                             }
                             if(rowStart < rowEnd) {
                                 System.out.println("rowStart < rowEnd");
                                 while(colStart < cols) {
                                     System.out.println("colStart = " + colStart + " cols = " + cols);
-                                    outputLines.add("*");
+                                    if(true) { //todo: check list of path points to see if this point is in path
+                                        outputLines.add("*");
+                                    }
+                                    else {
+                                        outputLines.add(".");
+                                    }
                                     colStart++;
                                 }
                                 outputLines.add("\n");
-                                colStart = 0;
-                                rowStart++;
+                                //colStart = 0;
                             }
+                            colStart = 0;
+                            rowStart++;
+
                             /*if(colStart == cols) {
                                 System.out.println("colStart == cols");
                                 outputLines.add("\n");
