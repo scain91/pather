@@ -109,39 +109,20 @@ public class pather {
         int rows = inputLines.size();
         int cols = inputLines.get(0).length();
 
-        //todo: refactor to use points
         List<Point> hashMarkerList = new ArrayList<Point>();
-        Point hashPoint = new Point(1,2);
-        hashMarkerList.add(hashPoint);
-        Point getPoint = hashMarkerList.get(0);
-        int rowPoint = getPoint.x;
-        int colPoint = getPoint.y;
-
-        System.out.println("rowPoint == 1 -> " + (rowPoint == 1));
-        System.out.println("colPoint == 2 -> " + (colPoint == 2));
-
-        System.out.println("hashMarkerList size = " + hashMarkerList.size());
-        hashMarkerList.remove(0);
-        System.out.println("hashMarkerList size = " + hashMarkerList.size());
-
-
-        List<Integer> rowHashMarker = new ArrayList<Integer>(); //marks last seen # position
-        List<Integer> colHashMarker = new ArrayList<Integer>(); //marks last seen # position
-        System.out.println("rowHashMarker size: " + rowHashMarker.size());
-        System.out.println("colHashMarker size: " + colHashMarker.size());
 
         for(int row = 0; row < rows; row++) {
             cols = inputLines.get(row).length();
             for(int col = 0; col < cols; col++) {
                 int colindex = -1;
-                if(inputLines.get(row).charAt(col) == '.' && hashMarkerList.size() == 0) { //rowHashMarker.size() == 0 && colHashMarker.size() == 0) {
+                if(inputLines.get(row).charAt(col) == '.' && hashMarkerList.size() == 0) {
                     System.out.println("Seen '.' and Hash Markers == 0");
                     outputLines.add(".");
                     if(col+1 == cols) {
                         outputLines.add("\n");
                     }
                 }
-                if(inputLines.get(row).charAt(col) == '.' && hashMarkerList.size() > 0) { //&& rowHashMarker.size() > 0 && colHashMarker.size() > 0) {
+                if(inputLines.get(row).charAt(col) == '.' && hashMarkerList.size() > 0) {
                     System.out.println("Seen '.' and Hash Markers > 0");
                 }
 
@@ -150,11 +131,11 @@ public class pather {
                     System.out.println("Seen '#' and Row Index: " + row + " Col Index: " + col);
 
                     //todo: check if there is a prev # marker, if it does then connect them
-                    if(hashMarkerList.size() > 0) { //rowHashMarker.size() > 0 && colHashMarker.size() > 0) {
+                    if(hashMarkerList.size() > 0) {
                         System.out.println("Entering into connect portion");
                         //todo: # exists, need to connect them
-                        int rowStart = hashMarkerList.get(0).x; //rowHashMarker.get(0);
-                        int colStart = hashMarkerList.get(0).y+1; //colHashMarker.get(0)+1; //todo: get rid of +1
+                        int rowStart = hashMarkerList.get(0).x;
+                        int colStart = hashMarkerList.get(0).y+1; //todo: get rid of +1
                         int rowEnd = row;
                         int colEnd = col;
                         //check row and coldifferences
@@ -174,7 +155,6 @@ public class pather {
                                     }
                                     colStart++;
                                 }
-                                //rowStart++;
                             }
                             if(rowStart < rowEnd) {
                                 System.out.println("rowStart < rowEnd");
@@ -189,17 +169,9 @@ public class pather {
                                     colStart++;
                                 }
                                 outputLines.add("\n");
-                                //colStart = 0;
                             }
                             colStart = 0;
                             rowStart++;
-
-                            /*if(colStart == cols) {
-                                System.out.println("colStart == cols");
-                                outputLines.add("\n");
-                                colStart = 0;
-                                rowStart++;
-                            }*/
                         }
                         System.out.println("Past the outputLines portion for connecting");
 
@@ -239,24 +211,19 @@ public class pather {
 
                         //remove first # marker
                         hashMarkerList.remove(0);
-                        //rowHashMarker.remove(0);
-                        //colHashMarker.remove(0);
                     }
                     //add new # marker to hashMarker list
                     outputLines.add("#");
-                    Point newHashPoint = new Point(row,colindex);
+                    Point newHashPoint = new Point(row,colindex); //todo: does this need to be colindex?
                     hashMarkerList.add(newHashPoint);
-                    //rowHashMarker.add(row);
-                    //colHashMarker.add(colindex);
-
                 }
             }
         }
         //no other matches
         //todo: output '.' after last #
         System.out.println("rows = " + rows);
-        int lastRows = hashMarkerList.get(0).x; //rowHashMarker.get(0);
-        int lastCols = hashMarkerList.get(0).y+1; //colHashMarker.get(0)+1;
+        int lastRows = hashMarkerList.get(0).x;
+        int lastCols = hashMarkerList.get(0).y+1; //todo: get rid of +1
         while(lastRows < rows) {
             System.out.println("lastRows = " + lastRows);
             while(lastCols < cols) {
@@ -267,7 +234,6 @@ public class pather {
             lastCols = 0;
             lastRows++;
         }
-        //outputLines.add("\n\n");
 
         return outputLines;
     }
