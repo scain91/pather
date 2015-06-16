@@ -15,8 +15,8 @@ public class pather {
             System.out.println("Pather");
         }
 
-        String input = "input.txt";
-        String output = "output.txt";
+        String input = new String();
+        String output = new String();
         try {
             input = args[0];
         } catch (Exception e) {
@@ -35,20 +35,32 @@ public class pather {
 
 
         List<String> inputLines = new ArrayList<String>();
-        FileInputStream inputStream = null;
+        List<String> outputLines = new ArrayList<String>();
 
+        inputLines = getInputFromFileToList(input);
+
+        outputLines = findPath(inputLines);
+
+        outputListToFile(output,outputLines);
+
+        if(test) {
+            System.out.println("End of Pather");
+        }
+    }
+
+    private static List<String> getInputFromFileToList(String input) {
+        List<String> inputLines = new ArrayList<String>();
+
+        FileInputStream inputStream = null;
         BufferedReader reader = null;
 
         try {
             inputStream = new FileInputStream(input);
             reader = new BufferedReader(new InputStreamReader(inputStream));
 
-            //System.out.println("Reading File line by line using BufferedReader");
-
             String line = reader.readLine();
 
             while(line != null){
-                //System.out.println(line);
                 inputLines.add(line);
                 line = reader.readLine();
             }
@@ -66,19 +78,16 @@ public class pather {
                 Logger.getLogger(pather.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return inputLines;
+    }
 
-
-        List<String> outputLines = findPath(inputLines);
-
-
+    private static void outputListToFile(String outputFile, List<String> outputLines) {
         BufferedWriter writer = null;
         FileOutputStream outputStream = null;
 
         try {
-            outputStream = new FileOutputStream(output);
+            outputStream = new FileOutputStream(outputFile);
             writer = new BufferedWriter(new OutputStreamWriter(outputStream));
-
-            //System.out.println("Reading File line by line using BufferedReader");
 
             for(String s : outputLines) {
                 //System.out.println(s);
@@ -97,25 +106,19 @@ public class pather {
                 Logger.getLogger(pather.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-
-        if(test) {
-            System.out.println("End of Pather");
-        }
     }
 
-    //todo: find path method given the input file
+    //find path method given the input file
     private static List<String> findPath(List<String> inputLines) {
         List<String> outputLines = new ArrayList<String>();
         int rows = inputLines.size();
-        int cols = inputLines.get(0).length();
-        List<Point> pathPointList = new ArrayList<Point>();
-        List<Point> hashMarkerList = new ArrayList<Point>();
+        int cols = inputLines.get(0).length(); //all rows are same width
+        List<Point> hashMarkerList = new ArrayList<Point>(); //list of current #'s that need a path
+        List<Point> pathPointList = new ArrayList<Point>(); //points for a path between two #'s
 
         for(int row = 0; row < rows; row++) {
             cols = inputLines.get(row).length();
             for(int col = 0; col < cols; col++) {
-                int colindex = -1;
                 if(inputLines.get(row).charAt(col) == '.' && hashMarkerList.size() == 0) {
                     if(test) {
                         System.out.println("Seen '.' and Hash Markers == 0");
@@ -136,13 +139,12 @@ public class pather {
                         System.out.println("Seen '#' and Row Index: " + row + " Col Index: " + col);
                     }
 
-
-                    //todo: check if there is a prev # marker, if it does then connect them
+                    //check if there is a prev # marker, if it does then connect them
                     if(hashMarkerList.size() > 0) {
                         if(test) {
                             System.out.println("Entering into connect portion");
                         }
-                        //todo: # exists, need to connect them
+                        //# exists, need to connect them
                         int rowStart = hashMarkerList.get(0).x;
                         int colStart = hashMarkerList.get(0).y+1; //todo: get rid of +1
                         int rowEnd = row;
@@ -150,9 +152,7 @@ public class pather {
                         Point point1 = new Point(rowStart,hashMarkerList.get(0).y);
                         Point point2 = new Point(rowEnd,colEnd);
                         pathPointList.addAll(getPath(point1,point2));
-                        //check row and coldifferences
-                        int rowDiff = rowEnd - rowStart;
-                        int colDiff = colEnd - colStart;
+
                         while(rowStart <= rowEnd) {
                             if(rowStart == rowEnd) {
                                 if(test) {
@@ -164,7 +164,7 @@ public class pather {
                                         System.out.println("colStart = " + colStart + " < colEnd = " + colEnd);
                                     }
                                     Point p = new Point(rowStart,colStart);
-                                    if(pathPointList.contains(p)) { //todo: check list of path points to see if this point is in path
+                                    if(pathPointList.contains(p)) { //check list of path points to see if this point is in path
                                         outputLines.add("*");
                                     }
                                     else {
@@ -182,7 +182,7 @@ public class pather {
                                         System.out.println("colStart = " + colStart + " cols = " + cols);
                                     }
                                     Point p = new Point(rowStart,colStart);
-                                    if(pathPointList.contains(p)) { //todo: check list of path points to see if this point is in path
+                                    if(pathPointList.contains(p)) { //check list of path points to see if this point is in path
                                         outputLines.add("*");
                                     }
                                     else {
@@ -199,43 +199,6 @@ public class pather {
                             System.out.println("Past the outputLines portion for connecting");
                         }
 
-
-                      /*  //todo: is this part necessary???
-                        //todo: check which row move form to use based on where the cols are
-                        //from rowStart+1 < rowEnd if on same col
-                        //from rowStart+1 <= rowEnd if on diff col
-                        if(colDiff == 0) {
-                            while(rowStart+1 < rowEnd) {
-
-                                rowStart++;
-                            }
-                        }
-                        else {
-                            while(rowStart+1 <= rowEnd) {
-
-                                rowStart++;
-                            }
-                        }
-                        //todo: check which col move form to use based on where the rows are
-                        //from colfirst+1 < colsecond if on same row
-                        //from colfirst+1 <= colsecond if on diff row
-                        int colfirst = (colStart < colEnd) ? colStart : colEnd;
-                        int colsecond = (colStart > colEnd) ? colStart : colEnd;
-                        if(rowDiff == 0) {
-                            while(colfirst+1 < colsecond) {
-
-                                colfirst++;
-                            }
-                        }
-                        else {
-                            while(colfirst+1 <= colsecond) {
-
-                                colfirst++;
-                            }
-                        }
-                        //todo: end of necessary? part
-*/
-
                         //remove first # marker
                         hashMarkerList.remove(0);
                     }
@@ -247,7 +210,7 @@ public class pather {
             }
         }
         //no other matches
-        //todo: output '.' after last #
+        //output '.' after last # unless part of a path then output '*'
         if(test) {
             System.out.println("rows = " + rows);
         }
@@ -259,13 +222,12 @@ public class pather {
             }
             while(lastCols < cols) {
                 Point p = new Point(lastRows,lastCols);
-                if(pathPointList.contains(p)) { //todo: check list of path points to see if this point is in path
+                if(pathPointList.contains(p)) { //check list of path points to see if this point is in path
                     outputLines.add("*");
                 }
                 else {
                     outputLines.add(".");
                 }
-                //outputLines.add(".");
                 lastCols++;
             }
             outputLines.add("\n");
@@ -315,7 +277,7 @@ public class pather {
             rowShift--;
         }
 
-        //todo: col shifting
+        //column shifting
         if(colShift > 0) {
             colShift--; //because we have taken care of one point from the row shift or the two #'s are on the same line
             while(colShift > 0) {
@@ -349,6 +311,7 @@ public class pather {
         if(test) {
             System.out.println("Finished getPath");
         }
+
         return pathPointList;
     }
 }
