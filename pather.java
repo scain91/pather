@@ -39,9 +39,10 @@ public class pather {
 
         inputLines = getInputFromFileToList(input);
 
+        //outputLines = complicatedFindPath(inputLines);
         outputLines = findPath(inputLines);
 
-        outputListToFile(output,outputLines);
+        outputListToFile(output, outputLines);
 
         if(test) {
             System.out.println("End of Pather");
@@ -108,8 +109,56 @@ public class pather {
         }
     }
 
-    //find path method given the input file
+    //simpler version of findPath
     private static List<String> findPath(List<String> inputLines) {
+        List<String> outputLines = new ArrayList<String>();
+        int rows = inputLines.size();
+        int cols = inputLines.get(0).length(); //all rows are same width
+        int hashMarkerListPointer = 0; //marking the spot of the current #
+        List<Point> hashMarkerList = new ArrayList<Point>(); //list of current #'s that need a path
+        List<Point> pathPointList = new ArrayList<Point>(); //points for a path between two #'s
+
+        for(int row = 0; row < rows; row++) {
+            cols = inputLines.get(row).length();
+            for(int col = 0; col < cols; col++) {
+                if (inputLines.get(row).charAt(col) == '#') {
+                    hashMarkerList.add(new Point(row, col));
+                }
+            }
+        }
+        if(test) {
+            System.out.println("hashMarkerList size = " + hashMarkerList.size());
+            System.out.println("hashMarkerListPointer = " + hashMarkerListPointer);
+        }
+        while(hashMarkerListPointer <= hashMarkerList.size()-2) { //need 2 points to find a path
+            if(test) {
+                System.out.println("hashMarkerList size = " + hashMarkerList.size());
+                System.out.println("hashMarkerListPointer = " + hashMarkerListPointer);
+            }
+            pathPointList.addAll(getPath(hashMarkerList.get(hashMarkerListPointer), hashMarkerList.get(hashMarkerListPointer+1)));
+            hashMarkerListPointer++;
+        }
+        for(int row = 0; row < rows; row++) {
+            cols = inputLines.get(row).length();
+            for(int col = 0; col < cols; col++) {
+                if(hashMarkerList.contains(new Point(row,col))) {
+                    outputLines.add("#");
+                }
+                else if(pathPointList.contains(new Point(row,col))) {
+                    outputLines.add("*");
+                }
+                else {
+                    outputLines.add(".");
+                }
+            }
+            outputLines.add("\n");
+        }
+
+        return outputLines;
+    }
+
+    //more complicated version of findPath
+    private static List<String> complicatedFindPath(List<String> inputLines) {
         List<String> outputLines = new ArrayList<String>();
         int rows = inputLines.size();
         int cols = inputLines.get(0).length(); //all rows are same width
@@ -128,9 +177,10 @@ public class pather {
                         outputLines.add("\n");
                     }
                 }
-                if(inputLines.get(row).charAt(col) == '.' && hashMarkerList.size() > 0) {
-                    if(test) {
+                if(test) {
+                    if(inputLines.get(row).charAt(col) == '.' && hashMarkerList.size() > 0) {
                         System.out.println("Seen '.' and Hash Markers > 0");
+                        //do nothing, need to wait until we see end of grid or another # marker
                     }
                 }
 
@@ -149,7 +199,7 @@ public class pather {
                         int colStart = hashMarkerList.get(0).y+1; //todo: get rid of +1
                         int rowEnd = row;
                         int colEnd = col;
-                        Point point1 = new Point(rowStart,hashMarkerList.get(0).y);
+                        Point point1 = new Point(hashMarkerList.get(0).x,hashMarkerList.get(0).y);
                         Point point2 = new Point(rowEnd,colEnd);
                         pathPointList.addAll(getPath(point1,point2));
 
