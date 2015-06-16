@@ -8,13 +8,14 @@ import java.util.logging.Logger;
 
 public class pather {
 
-    static boolean test = true;
+    static boolean test = false;
 
     public static void main(String[] args) throws IOException {
         if(test) {
             System.out.println("Pather");
         }
 
+        //get input and output file names
         String input = new String();
         String output = new String();
         try {
@@ -157,6 +158,81 @@ public class pather {
         return outputLines;
     }
 
+    private static List<Point> getPath(Point point1, Point point2) {
+        if(test) {
+            System.out.println("Entering getPath");
+        }
+        List<Point> pathPointList = new ArrayList<Point>();
+        int row1 = point1.x;
+        int col1 = point1.y;
+        int row2 = point2.x;
+        int col2 = point2.y;
+
+        int rowDiff = row2-row1; //if zero no shift
+        int colDiff = col2-col1; //if pos then left shift, if neg then right shift
+        int rowShift = rowDiff;
+        int colShift = colDiff;
+
+        //row shifting
+        if(colShift == 0) { //there is # on the last row separating so there is one less row shift for the path
+            rowShift--;
+        }
+        while(rowShift > 0) {
+            if(test) {
+                System.out.println("rowShift " + rowShift + " > 0");
+            }
+            if(rowShift == 1 && colDiff == 0 && rowDiff == 1) {
+                //do not add to pathPointList because points are next to each other
+                if(test) {
+                    System.out.println("do not add to pathPointList because points are next to each other");
+                }
+            }
+            else {
+                Point p = new Point(row1+rowShift,col1);
+                pathPointList.add(p);
+                if(test) {
+                    System.out.println("Point added in row shift: (" + p.x + ", " + p.y + ")");
+                }
+            }
+            rowShift--;
+        }
+
+        //column shifting
+        if(colShift > 0) {
+            colShift--; //because we have taken care of one point from the row shift or the two #'s are on the same line
+            while(colShift > 0) {
+                Point p = new Point(row2,col1+colShift);
+                pathPointList.add(p);
+                if(test) {
+                    System.out.println("colShift = " + colShift);
+                    System.out.println("Point (" + p.x + ", " + p.y + ")");
+                }
+                colShift--;
+            }
+        }
+        else if(colShift < 0) {
+            colShift++; //because we have taken care of one point from the row shift or the two #'s are on the same line
+            while(colShift < 0) {
+                Point p = new Point(row2,col1+colShift);
+                pathPointList.add(p);
+                if(test) {
+                    System.out.println("colShift = " + colShift);
+                    System.out.println("Point (" + p.x + ", " + p.y + ")");
+                }
+                colShift++;
+            }
+        }
+
+        if(test) {
+            for(Point p : pathPointList) {
+                System.out.println("Output Point (" + p.x + ", " + p.y + ")");
+            }
+            System.out.println("Finished getPath");
+        }
+
+        return pathPointList;
+    }
+
     //more complicated version of findPath
     private static List<String> complicatedFindPath(List<String> inputLines) {
         List<String> outputLines = new ArrayList<String>();
@@ -288,80 +364,5 @@ public class pather {
         return outputLines;
     }
 
-    private static List<Point> getPath(Point point1, Point point2) {
-        if(test) {
-            System.out.println("Entering getPath");
-        }
-        List<Point> pathPointList = new ArrayList<Point>();
-        int row1 = point1.x;
-        int col1 = point1.y;
-        int row2 = point2.x;
-        int col2 = point2.y;
 
-        int rowDiff = row2-row1; //if zero no shift
-        int colDiff = col2-col1; //if pos then left shift, if neg then right shift
-        int rowShift = rowDiff;
-        int colShift = colDiff;
-
-        //row shifting
-        if(colShift == 0) { //there is # on the last row separating so there is one less row shift for the path
-            rowShift--;
-        }
-        while(rowShift > 0) {
-            if(test) {
-                System.out.println("rowShift " + rowShift + " > 0");
-            }
-            if(rowShift == 1 && colDiff == 0 && rowDiff == 1) {
-                //do not add to pathPointList because points are next to each other
-                if(test) {
-                    System.out.println("do not add to pathPointList because points are next to each other");
-                }
-            }
-            else {
-                Point p = new Point(row1+rowShift,col1);
-                pathPointList.add(p);
-                if(test) {
-                    System.out.println("Point added in row shift: (" + p.x + ", " + p.y + ")");
-                }
-            }
-            rowShift--;
-        }
-
-        //column shifting
-        if(colShift > 0) {
-            colShift--; //because we have taken care of one point from the row shift or the two #'s are on the same line
-            while(colShift > 0) {
-                Point p = new Point(row2,col1+colShift);
-                pathPointList.add(p);
-                if(test) {
-                    System.out.println("colShift = " + colShift);
-                    System.out.println("Point (" + p.x + ", " + p.y + ")");
-                }
-                colShift--;
-            }
-        }
-        else if(colShift < 0) {
-            colShift++; //because we have taken care of one point from the row shift or the two #'s are on the same line
-            while(colShift < 0) {
-                Point p = new Point(row2,col1+colShift);
-                pathPointList.add(p);
-                if(test) {
-                    System.out.println("colShift = " + colShift);
-                    System.out.println("Point (" + p.x + ", " + p.y + ")");
-                }
-                colShift++;
-            }
-        }
-
-
-        for(Point p : pathPointList) {
-            System.out.println("Output Point (" + p.x + ", " + p.y + ")");
-        }
-
-        if(test) {
-            System.out.println("Finished getPath");
-        }
-
-        return pathPointList;
-    }
 }
