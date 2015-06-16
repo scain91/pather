@@ -278,6 +278,8 @@ public class pather {
         int colDiff = col2-col1; //if pos then left shift, if neg then right shift
         int rowShift = rowDiff;
         int colShift = colDiff;
+
+        //row shifting
         if(colShift == 0) { //there is # on the last row separating so there is one less row shift for the path
             rowShift--;
         }
@@ -300,16 +302,9 @@ public class pather {
             }
             rowShift--;
         }
-        /*while(rowShift < rowDiff) {
-            if(test) {
-                System.out.println("rowShift = " + rowShift + " < rowDiff " + rowDiff);
-            }
-            Point p = new Point(row1+rowShift,col1);
-            pathPointList.add(p);
-            rowShift++;
 
-        }*/
-        if(colShift != 0) {
+        //todo: col shifting
+        /*if(colShift != 0) {
             if(test) {
                 System.out.println("colshift != 0");
                 System.out.println("row2 = " + row2 + ", col1 = " + col1);
@@ -322,28 +317,28 @@ public class pather {
             else {
                 colShift++;
             }
-        }
+        }*/
         if(colShift > 0) {
+            colShift--; //because we have taken care of one point from the row shift or the two #'s are on the same line
             while(colShift > 0) {
-                if(test) {
-                    System.out.println("colShift = " + colShift);
-                    int colVal = col1+colShift;
-                    System.out.println("Point (" + row2 + ", " + colVal + ")");
-                }
                 Point p = new Point(row2,col1+colShift);
                 pathPointList.add(p);
+                if(test) {
+                    System.out.println("colShift = " + colShift);
+                    System.out.println("Point (" + p.x + ", " + p.y + ")");
+                }
                 colShift--;
             }
         }
         else {
+            colShift++; //because we have taken care of one point from the row shift or the two #'s are on the same line
             while(colShift < 0) {
-                if(test) {
-                    System.out.println("colShift = " + colShift);
-                    int colVal = col1+colShift;
-                    System.out.println("Point (" + row2 + ", " + colVal + ")");
-                }
                 Point p = new Point(row2,col1+colShift);
                 pathPointList.add(p);
+                if(test) {
+                    System.out.println("colShift = " + colShift);
+                    System.out.println("Point (" + p.x + ", " + p.y + ")");
+                }
                 colShift++;
             }
         }
