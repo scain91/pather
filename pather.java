@@ -149,7 +149,7 @@ public class pather {
                         int colEnd = col;
                         Point point1 = new Point(rowStart,hashMarkerList.get(0).y);
                         Point point2 = new Point(rowEnd,colEnd);
-                        pathPointList = getPath(point1,point2);
+                        pathPointList.addAll(getPath(point1,point2));
                         //check row and coldifferences
                         int rowDiff = rowEnd - rowStart;
                         int colDiff = colEnd - colStart;
@@ -163,7 +163,8 @@ public class pather {
                                     if(test) {
                                         System.out.println("colStart = " + colStart + " < colEnd = " + colEnd);
                                     }
-                                    if(true) { //todo: check list of path points to see if this point is in path
+                                    Point p = new Point(rowStart,colStart);
+                                    if(pathPointList.contains(p)) { //todo: check list of path points to see if this point is in path
                                         outputLines.add("*");
                                     }
                                     else {
@@ -180,7 +181,8 @@ public class pather {
                                     if(test) {
                                         System.out.println("colStart = " + colStart + " cols = " + cols);
                                     }
-                                    if(true) { //todo: check list of path points to see if this point is in path
+                                    Point p = new Point(rowStart,colStart);
+                                    if(pathPointList.contains(p)) { //todo: check list of path points to see if this point is in path
                                         outputLines.add("*");
                                     }
                                     else {
@@ -197,6 +199,8 @@ public class pather {
                             System.out.println("Past the outputLines portion for connecting");
                         }
 
+
+                      /*  //todo: is this part necessary???
                         //todo: check which row move form to use based on where the cols are
                         //from rowStart+1 < rowEnd if on same col
                         //from rowStart+1 <= rowEnd if on diff col
@@ -229,7 +233,8 @@ public class pather {
                                 colfirst++;
                             }
                         }
-
+                        //todo: end of necessary? part
+*/
 
                         //remove first # marker
                         hashMarkerList.remove(0);
@@ -253,7 +258,14 @@ public class pather {
                 System.out.println("lastRows = " + lastRows);
             }
             while(lastCols < cols) {
-                outputLines.add(".");
+                Point p = new Point(lastRows,lastCols);
+                if(pathPointList.contains(p)) { //todo: check list of path points to see if this point is in path
+                    outputLines.add("*");
+                }
+                else {
+                    outputLines.add(".");
+                }
+                //outputLines.add(".");
                 lastCols++;
             }
             outputLines.add("\n");
@@ -304,20 +316,6 @@ public class pather {
         }
 
         //todo: col shifting
-        /*if(colShift != 0) {
-            if(test) {
-                System.out.println("colshift != 0");
-                System.out.println("row2 = " + row2 + ", col1 = " + col1);
-            }
-            Point p = new Point(row2,col1);
-            pathPointList.add(p);
-            if(colShift > 0) {
-                colShift--;
-            }
-            else {
-                colShift++;
-            }
-        }*/
         if(colShift > 0) {
             colShift--; //because we have taken care of one point from the row shift or the two #'s are on the same line
             while(colShift > 0) {
@@ -330,7 +328,7 @@ public class pather {
                 colShift--;
             }
         }
-        else {
+        else if(colShift < 0) {
             colShift++; //because we have taken care of one point from the row shift or the two #'s are on the same line
             while(colShift < 0) {
                 Point p = new Point(row2,col1+colShift);
