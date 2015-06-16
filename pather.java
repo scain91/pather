@@ -8,8 +8,9 @@ import java.util.logging.Logger;
 
 public class pather {
 
+    static boolean test = true;
+
     public static void main(String[] args) throws IOException {
-        boolean test = true;
         if(test) {
             System.out.println("Pather");
         }
@@ -108,7 +109,7 @@ public class pather {
         List<String> outputLines = new ArrayList<String>();
         int rows = inputLines.size();
         int cols = inputLines.get(0).length();
-
+        List<Point> pathPointList = new ArrayList<Point>();
         List<Point> hashMarkerList = new ArrayList<Point>();
 
         for(int row = 0; row < rows; row++) {
@@ -116,37 +117,52 @@ public class pather {
             for(int col = 0; col < cols; col++) {
                 int colindex = -1;
                 if(inputLines.get(row).charAt(col) == '.' && hashMarkerList.size() == 0) {
-                    System.out.println("Seen '.' and Hash Markers == 0");
+                    if(test) {
+                        System.out.println("Seen '.' and Hash Markers == 0");
+                    }
                     outputLines.add(".");
                     if(col+1 == cols) {
                         outputLines.add("\n");
                     }
                 }
                 if(inputLines.get(row).charAt(col) == '.' && hashMarkerList.size() > 0) {
-                    System.out.println("Seen '.' and Hash Markers > 0");
+                    if(test) {
+                        System.out.println("Seen '.' and Hash Markers > 0");
+                    }
                 }
 
                 if(inputLines.get(row).charAt(col) == '#') {
-                    colindex = col;
-                    System.out.println("Seen '#' and Row Index: " + row + " Col Index: " + col);
+                    if(test) {
+                        System.out.println("Seen '#' and Row Index: " + row + " Col Index: " + col);
+                    }
+
 
                     //todo: check if there is a prev # marker, if it does then connect them
                     if(hashMarkerList.size() > 0) {
-                        System.out.println("Entering into connect portion");
+                        if(test) {
+                            System.out.println("Entering into connect portion");
+                        }
                         //todo: # exists, need to connect them
                         int rowStart = hashMarkerList.get(0).x;
                         int colStart = hashMarkerList.get(0).y+1; //todo: get rid of +1
                         int rowEnd = row;
                         int colEnd = col;
+                        Point point1 = new Point(rowStart,hashMarkerList.get(0).y);
+                        Point point2 = new Point(rowEnd,colEnd);
+                        pathPointList = getPath(point1,point2);
                         //check row and coldifferences
                         int rowDiff = rowEnd - rowStart;
                         int colDiff = colEnd - colStart;
                         while(rowStart <= rowEnd) {
                             if(rowStart == rowEnd) {
-                                System.out.println("rowStart == rowEnd");
-                                System.out.println("colStart = " + colStart + " colEnd = " + colEnd);
+                                if(test) {
+                                    System.out.println("rowStart == rowEnd");
+                                    System.out.println("colStart = " + colStart + " colEnd = " + colEnd);
+                                }
                                 while(colStart < colEnd) {
-                                    System.out.println("colStart = " + colStart + " < colEnd = " + colEnd);
+                                    if(test) {
+                                        System.out.println("colStart = " + colStart + " < colEnd = " + colEnd);
+                                    }
                                     if(true) { //todo: check list of path points to see if this point is in path
                                         outputLines.add("*");
                                     }
@@ -157,9 +173,13 @@ public class pather {
                                 }
                             }
                             if(rowStart < rowEnd) {
-                                System.out.println("rowStart < rowEnd");
+                                if(test) {
+                                    System.out.println("rowStart < rowEnd");
+                                }
                                 while(colStart < cols) {
-                                    System.out.println("colStart = " + colStart + " cols = " + cols);
+                                    if(test) {
+                                        System.out.println("colStart = " + colStart + " cols = " + cols);
+                                    }
                                     if(true) { //todo: check list of path points to see if this point is in path
                                         outputLines.add("*");
                                     }
@@ -173,7 +193,9 @@ public class pather {
                             colStart = 0;
                             rowStart++;
                         }
-                        System.out.println("Past the outputLines portion for connecting");
+                        if(test) {
+                            System.out.println("Past the outputLines portion for connecting");
+                        }
 
                         //todo: check which row move form to use based on where the cols are
                         //from rowStart+1 < rowEnd if on same col
@@ -214,18 +236,22 @@ public class pather {
                     }
                     //add new # marker to hashMarker list
                     outputLines.add("#");
-                    Point newHashPoint = new Point(row,colindex); //todo: does this need to be colindex?
+                    Point newHashPoint = new Point(row,col);
                     hashMarkerList.add(newHashPoint);
                 }
             }
         }
         //no other matches
         //todo: output '.' after last #
-        System.out.println("rows = " + rows);
+        if(test) {
+            System.out.println("rows = " + rows);
+        }
         int lastRows = hashMarkerList.get(0).x;
         int lastCols = hashMarkerList.get(0).y+1; //todo: get rid of +1
         while(lastRows < rows) {
-            System.out.println("lastRows = " + lastRows);
+            if(test) {
+                System.out.println("lastRows = " + lastRows);
+            }
             while(lastCols < cols) {
                 outputLines.add(".");
                 lastCols++;
@@ -236,5 +262,100 @@ public class pather {
         }
 
         return outputLines;
+    }
+
+    private static List<Point> getPath(Point point1, Point point2) {
+        if(test) {
+            System.out.println("Entering getPath");
+        }
+        List<Point> pathPointList = new ArrayList<Point>();
+        int row1 = point1.x;
+        int col1 = point1.y;
+        int row2 = point2.x;
+        int col2 = point2.y;
+
+        int rowDiff = row2-row1; //if zero no shift
+        int colDiff = col2-col1; //if pos then left shift, if neg then right shift
+        int rowShift = rowDiff;
+        int colShift = colDiff;
+        if(colShift == 0) { //there is # on the last row separating so there is one less row shift for the path
+            rowShift--;
+        }
+        while(rowShift > 0) {
+            if(test) {
+                System.out.println("rowShift " + rowShift + " > 0");
+            }
+            if(rowShift == 1 && colDiff == 0 && rowDiff == 1) {
+                //do not add to pathPointList because points are next to each other
+                if(test) {
+                    System.out.println("do not add to pathPointList because points are next to each other");
+                }
+            }
+            else {
+                Point p = new Point(row1+rowShift,col1);
+                pathPointList.add(p);
+                if(test) {
+                    System.out.println("Point added in row shift: (" + p.x + ", " + p.y + ")");
+                }
+            }
+            rowShift--;
+        }
+        /*while(rowShift < rowDiff) {
+            if(test) {
+                System.out.println("rowShift = " + rowShift + " < rowDiff " + rowDiff);
+            }
+            Point p = new Point(row1+rowShift,col1);
+            pathPointList.add(p);
+            rowShift++;
+
+        }*/
+        if(colShift != 0) {
+            if(test) {
+                System.out.println("colshift != 0");
+                System.out.println("row2 = " + row2 + ", col1 = " + col1);
+            }
+            Point p = new Point(row2,col1);
+            pathPointList.add(p);
+            if(colShift > 0) {
+                colShift--;
+            }
+            else {
+                colShift++;
+            }
+        }
+        if(colShift > 0) {
+            while(colShift > 0) {
+                if(test) {
+                    System.out.println("colShift = " + colShift);
+                    int colVal = col1+colShift;
+                    System.out.println("Point (" + row2 + ", " + colVal + ")");
+                }
+                Point p = new Point(row2,col1+colShift);
+                pathPointList.add(p);
+                colShift--;
+            }
+        }
+        else {
+            while(colShift < 0) {
+                if(test) {
+                    System.out.println("colShift = " + colShift);
+                    int colVal = col1+colShift;
+                    System.out.println("Point (" + row2 + ", " + colVal + ")");
+                }
+                Point p = new Point(row2,col1+colShift);
+                pathPointList.add(p);
+                colShift++;
+            }
+        }
+
+
+        for(Point p : pathPointList) {
+            System.out.println("Output Point (" + p.x + ", " + p.y + ")");
+        }
+
+        if(test) {
+            System.out.println("Finished getPath");
+        }
+        return pathPointList;
     }
 }
