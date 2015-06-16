@@ -18,6 +18,9 @@ public class pather {
         //get input and output file names
         String input = new String();
         String output = new String();
+        if(args.length == 0) {
+            throw new IndexOutOfBoundsException("No arguments given");
+        }
         try {
             input = args[0];
         } catch (Exception e) {
@@ -50,7 +53,7 @@ public class pather {
         }
     }
 
-    private static List<String> getInputFromFileToList(String input) {
+    public static List<String> getInputFromFileToList(String input) throws FileNotFoundException {
         List<String> inputLines = new ArrayList<String>();
 
         FileInputStream inputStream = null;
@@ -69,8 +72,9 @@ public class pather {
 
         } catch (FileNotFoundException e) {
             Logger.getLogger(pather.class.getName()).log(Level.SEVERE, null, e);
-        } catch (IOException e) {
-            Logger.getLogger(pather.class.getName()).log(Level.SEVERE, null, e);
+            throw e;
+        } catch (IOException ioe) {
+            Logger.getLogger(pather.class.getName()).log(Level.SEVERE, null, ioe);
 
         } finally {
             try {
@@ -225,7 +229,7 @@ public class pather {
 
         if(test) {
             for(Point p : pathPointList) {
-                System.out.println("Output Point (" + p.x + ", " + p.y + ")");
+                System.out.println("Output Point * for (" + p.x + ", " + p.y + ")");
             }
             System.out.println("Finished getPath");
         }
