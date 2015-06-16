@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 public class testPather {
     String inputDirectory = "C:\\Users\\Sara\\Documents\\Big Data\\sideprojects\\src\\main\\java\\";
-    String outputDirectory = "C:\\Users\\Sara\\Documents\\Big Data\\sideprojects\\src\\main\\java\\outputTests\\";
+    String outputDirectory = "C:\\Users\\Sara\\Documents\\Big Data\\sideprojects\\src\\main\\java\\";
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void patherNoArgumentsTest() throws IOException {
@@ -177,6 +177,105 @@ public class testPather {
         correctOutput.add("..*..");
         correctOutput.add(".#*..");
         correctOutput.add(".**##");
+
+        File outputFileCreated = new File(outputFileName);
+        assertTrue(outputFileCreated.exists());
+        List<String> outputFileLines = pather.getInputFromFileToList(outputFileName);
+        assertEquals(correctOutput, outputFileLines);
+    }
+
+    @Test
+    public void patherTestSix() throws FileNotFoundException {
+        String inputFileName = inputDirectory + "test1.txt";
+        String outputFileName = inputDirectory + "outputsixTest.txt";
+
+        String[] patherArgs = new String[2];
+        patherArgs[0] = inputFileName;
+        patherArgs[1] = outputFileName;
+        try {
+            pather.main(patherArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<String> correctOutput = new ArrayList<String>();
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("....#...................");
+        correctOutput.add("....*...................");
+        correctOutput.add("....*...................");
+        correctOutput.add("....*...................");
+        correctOutput.add("....*...................");
+        correctOutput.add("....**************#.....");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+
+        File outputFileCreated = new File(outputFileName);
+        assertTrue(outputFileCreated.exists());
+        List<String> outputFileLines = pather.getInputFromFileToList(outputFileName);
+        assertEquals(correctOutput, outputFileLines);
+    }
+
+    @Test
+    public void patherTestSeven() throws FileNotFoundException {
+        String inputFileName = inputDirectory + "test2.txt";
+        String outputFileName = inputDirectory + "outputsevenTest.txt";
+
+        String[] patherArgs = new String[2];
+        patherArgs[0] = inputFileName;
+        patherArgs[1] = outputFileName;
+        try {
+            pather.main(patherArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<String> correctOutput = new ArrayList<String>();
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("....#*************#.....");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+
+        File outputFileCreated = new File(outputFileName);
+        assertTrue(outputFileCreated.exists());
+        List<String> outputFileLines = pather.getInputFromFileToList(outputFileName);
+        assertEquals(correctOutput, outputFileLines);
+    }
+
+    @Test
+    public void patherTestEight() throws FileNotFoundException {
+        String inputFileName = inputDirectory + "test3.txt";
+        String outputFileName = inputDirectory + "outputeightTest.txt";
+
+        String[] patherArgs = new String[2];
+        patherArgs[0] = inputFileName;
+        patherArgs[1] = outputFileName;
+        try {
+            pather.main(patherArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<String> correctOutput = new ArrayList<String>();
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("....#*************#.....");
+        correctOutput.add("..................*.....");
+        correctOutput.add("..................*.....");
+        correctOutput.add("..................*.....");
+        correctOutput.add("..................*.....");
+        correctOutput.add("..................*.....");
+        correctOutput.add("............#******.....");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
+        correctOutput.add("........................");
 
         File outputFileCreated = new File(outputFileName);
         assertTrue(outputFileCreated.exists());
